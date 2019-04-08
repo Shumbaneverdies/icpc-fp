@@ -48,15 +48,19 @@ let commaSprinkler (input:string) : string option =
   |None -> []
 
  let rec matchwordbefore (lst:char list) (word:char list) (idx:int) (widx:int) (count:int): int option= //returns the starting index(int option) of the first occurance of a matching word after a serplyed index
-  match (lst.[idx]=word.[(List.length word)-1]) with
-  |true -> Some (idx-count)      //at the end of the word
-  |false -> match (lst.[idx] = word.[widx]) with
-            |true -> matchwordbefore lst word (idx+1) (widx+1) (count+1)
-            |false -> matchwordbefore lst word (idx+1) widx count 
+  match idx with 
+  | -1 -> None
+  | _ -> match (lst.[idx]=word.[(List.length word)-1]) with
+         |true -> Some (idx-count)      //at the end of the word
+         |false -> match (lst.[idx] = word.[widx]) with
+                   |true -> matchwordbefore lst word (idx+1) (widx+1) (count+1)
+                   |false -> matchwordbefore lst word (idx+1) widx count 
+  
  
  let idxwordbefore = matchwordbefore inList Bword 0 0 0
- 
+ let idxwordafter = (idx+2)
 
+ None
 let rivers input =
     failwith "Not implemented"
 
