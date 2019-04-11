@@ -53,6 +53,13 @@ let commaSprinkler (input:string) : string option =
                            |false -> match a.[PIDX-1]=' ',a.[PIDX+1]='.',a.[PIDX+2]='.',a.[PIDX+2]=' ' with
                                      |true,_,_,_ |_,true,_,_ |_,_,true,_ |_,_,_,true -> None
                                      |_ -> valid4 str (PIDX+1)
+ 
+ let validation (str:string) : string option = 
+  let output = valid1 str
+  let output = valid2 output 0
+  let output = valid3 output 0
+  let output = valid4 output 0
+  output 
 
  let rec wordbefore (lst:char List) (idx:int) (lst2:char List) : char list option = //returns the word before the serplyed index (as char list) 
   match (lst.[idx] = lst.[0]) with 
@@ -127,13 +134,12 @@ let commaSprinkler (input:string) : string option =
     
 
 
+ let output = input|>validation 
 
- let output = valid1 input
- let output = valid2 output 0
- let output = valid3 output 0
- let output = valid4 output 0
  let output = sprinkleAfter output 0
+
  output
+
 let rivers input =
     failwith "Not implemented"
 
