@@ -134,8 +134,34 @@ let commaSprinkler (input:string) : string option =
  let output = valid4 output 0
  let output = sprinkleAfter output 0
  output
+
+ //################################################## Rivers #############################################################
 let rivers input =
-    failwith "Not implemented"
+ let rec findspace (lst:char list) (idx:int) : int option = //returns the index(int option) of the first occurence of a space(after a given index) else returns None
+  match idx=(List.length (lst))-1 with
+  |true -> None       //if there are no commas
+  |false -> match lst.[idx] with 
+            |' ' -> Some idx
+            |_ -> findspace lst (idx+1)
+
+ let rec makestr (chl:char list) str : string = //converts a char list into a string
+  match chl with
+  |h::t -> match List.length t = 0 with 
+           |true -> str
+           |false -> makestr t (str + Char.ToString (h))
+ 
+ let rec buildword (lst:char list) (idx1:int) (idx2:int) (strList:string list) : string list option = //idx1=0 idx2=index of ' '
+  match idx2 with 
+  | -1 -> None 
+
+ let rec split (str:string) (idx:int) : string option =    //same as c# string.split()
+  let lst = List.ofSeq str 
+  let idxsp = 
+    match findspace lst idx with
+    |None -> -1
+    |Some a -> a 
+  let strList = buildWord lst 0 idxsp [] 
+
 
 [<EntryPoint>]
 let main argv =
