@@ -52,14 +52,30 @@ let commaSprinkler (input:string) : string option =
                                      |true,_,_,_ |_,false,_,_ |_,_,true,_ |_,_,_,true -> None
                                      |_ -> valid4 str (PIDX+1)
 
+ let rec wordbefore (lst:char List) (idx:int) (lst2:char List) : char list option = //returns the word before the serplyed index (as char list) 
+  match (lst.[idx] = lst.[0]) with 
+  |true -> Some (lst.[0]::lst2)         //at the begining of the sentance
+  |false -> match lst.[idx-1] with 
+            |' ' -> Some lst2
+            |a -> wordbefore lst (idx-1) (a::lst2)
 
+ let rec wordafter (lst:char list) (idx:int) (lst2:char list) : char list option= //returns the word after the serplyed index (as char list) 
+  match (lst.[idx]=lst.[(List.length (lst))-1]) with
+  |true -> Some lst2     //at the end of the sentance 
+  |false -> match lst.[idx+1] with 
+            |' ' -> Some lst2
+            |'.' -> Some lst2
+            |a -> wordafter lst (idx+1) (lst2@[a])
 
- let input = valid1 input
- let input = valid2 input 0
- let input = valid3 input 0
- let input = valid4 input 0 
  
- input
+
+
+ let output = valid1 input
+ let output = valid2 output 0
+ let output = valid3 output 0
+ let output = valid4 output 0
+ 
+ output
 let rivers input =
     failwith "Not implemented"
 
