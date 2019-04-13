@@ -217,10 +217,6 @@ let check a =
     | _ -> Some a
 
 let rivers a = check (splitword a)
-=======
-let rivers input =
-    failwith "Not implemented"
->>>>>>> 9cc314d149839b60a800ab890728b3ff0bb0f760
 
 [<EntryPoint>]
 let main argv =
