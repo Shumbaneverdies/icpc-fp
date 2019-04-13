@@ -77,14 +77,24 @@ let commaSprinkler (input:string) : string option =
                       |' ' |'.' |',' -> Some lst2
                       |a -> wordafter lst (idx+1) (lst2@[a]) first
 
- let rec matchword (str:char list) (word:char list) (sidx:int) (widx:int) : int option = //finds the word in the sentance and gives back the index of the 'spot' after the word
+ let rec matchwordbefore (str:char list) (word:char list) (sidx:int) (widx:int) : int option = //finds the word in the sentance and gives back the index of the 'spot' after the word
   match sidx=(List.length str)-1 with                                              //idx = where it starts lokking from for the matching word (Bword) in the string
   |true -> None //at the end of the sentance
   |false -> match widx=(List.length word)-1 with
             |true -> Some (sidx+1) //at the end of the word (ie match found)
             |false -> match str.[sidx]=word.[widx] with
-                      |true -> matchword str word (sidx+1) (widx+1)
-                      |false -> matchword str word (sidx+1) 0
+                      |true -> matchwordbefore str word (sidx+1) (widx+1)
+                      |false -> matchwordbefore str word (sidx+1) 0
+
+ let rec matchwordafter (str:char list) (word:char list) (sidx:int) (widx:int) : int option = //finds the word in the sentance and gives back the index of the 'spot' after the word
+  match sidx=(List.length str)-1 with                                              //idx = where it starts lokking from for the matching word (Bword) in the string
+  |true -> None //at the end of the sentance
+  |false -> match widx=(List.length word)-1 with
+            |true -> Some (sidx-1-(List.length word)) //at the end of the word (ie match found)
+            |false -> match str.[sidx]=word.[widx] with
+                      |true -> matchwordafter str word (sidx+1) (widx+1)
+                      |false -> matchwordafter str word (sidx+1) 0
+
 
  let addcomma (str:char list) (idx:int) : char list = //puts a comma in at a serplyed index and a space after it
   let Fstr = str.[0..(idx-1)]
@@ -107,7 +117,7 @@ let commaSprinkler (input:string) : string option =
   |None -> None
   |Some a -> 
   let strL = List.ofSeq a //convert it to a char list
-  let CIDX = match findcomma strL idx with //converting to an int //index of the first comma
+  let CIDX = match findcomma strL (idx) with //converting to an int //index of the first comma
              |Some a -> a
              |_ -> -1  
 
@@ -118,7 +128,7 @@ let commaSprinkler (input:string) : string option =
               |Some a -> a
               |_ -> [] 
    
-  let inIDX = match matchword strL Bword idx 0 with //inIDX is the place a comma must be put in             idx = where it starts lokking from for the matching word (Bword) in the string
+  let inIDX = match matchwordbefore strL Bword idx 0 with //inIDX is the place a comma must be put in             idx = where it starts lokking from for the matching word (Bword) in the string
               |Some a -> a
               |None -> -1 
    
@@ -129,13 +139,14 @@ let commaSprinkler (input:string) : string option =
         | _ -> match strL.[inIDX] with
                |',' |'.' -> sprinkleAfter str (idx+2)
                |' ' -> sprinkleAfter (mkstroption (addcomma strL inIDX)) (idx+2)
+               |_ -> failwith "oops"
 
  let rec sprinkleBefore (str:string option) idx : string option = //simular to above
   match str with 
   |None -> None
   |Some a -> 
   let strL = List.ofSeq a //convert it to a char list
-  let CIDX = match findcomma strL idx with //converting to an int //index of the first comma
+  let CIDX = match findcomma strL 0 with //converting to an int //index of the first comma
              |Some a -> a
              |_ -> -1  
 
@@ -146,33 +157,55 @@ let commaSprinkler (input:string) : string option =
               |Some a -> a
               |_ -> [] 
    
-  let inIDX = match matchword strL Aword idx 0 with //inIDX is the place a comma must be put in             idx = where it starts lokking from for the matching word (Bword) in the string
+  let inIDX = match matchwordafter strL Aword idx 0 with //inIDX is the place a comma must be put in             idx = where it starts lokking from for the matching word (Bword) in the string
               |Some a -> a
               |None -> -1 
    
+  
   match Aword with                                                                        
   |[] -> str 
   |_ -> match inIDX with
         | -1 -> str
-        | _ -> match strL.[inIDX] with
-               |',' |'.' -> sprinkleBefore str (idx+2)
-               |' ' -> sprinkleBefore (mkstroption (addcomma strL inIDX)) (idx+2)
+        | _ -> match strL.[inIDX],strL.[inIDX]|>Char.IsLetter with
+               |_,true -> let inIDX = inIDX+1
+                          match strL.[inIDX] with 
+                          |',' |'.' -> sprinkleBefore str (inIDX+3)
+                          |' ' -> sprinkleBefore (mkstroption (addcomma strL inIDX)) (idx+2)
+                          |_ -> failwith "oops"
+               |',',_ |'.',_ -> sprinkleBefore str (inIDX+3)
+               |' ',_ -> sprinkleBefore (mkstroption (addcomma strL inIDX)) (idx+2)
+               |_ -> failwith "oops"
  
- let rec sprinkle (str:string option) : string option =
-  let ori = str
-  let str = sprinkleAfter str 0
-  let str = sprinkleBefore str 0
-  match ori=str with
-  |true -> str
-  |false -> sprinkle str 
+ let rec sprinkle (str:string option) idx : string option =
+  let out = sprinkleAfter str idx
+  let out = sprinkleBefore out idx
+  let stri = match out with 
+            |Some a -> a
+            |_ -> failwith "oops"
+  let idx = match findcomma (List.ofSeq stri) (idx) with
+             |Some a -> a
+             |None -> -1
 
+  match idx,idx<((List.ofSeq stri)|>List.length) with
+  | -1,_ -> out
+  |_,true -> sprinkle out (idx+2)
+  |_ -> out
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^FUNCTIONS^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
  let output = input|>validation 
 
- //let output = sprinkle output
- let output = sprinkleAfter output 0
- let output = sprinkleBefore output 0
+ let output = sprinkle output 0
+ (*let out = match output with 
+           |Some a -> a
+           |_ -> failwith "oops"
+
+ let CIDX = match findcomma (List.ofSeq out) 0 with
+ |Some a -> a
+ |_ -> failwith "oops"
+
+ let output = sprinkleAfter output (CIDX+1)
+ let output = sprinkleBefore output (CIDX+1)
+ *)
  output
 
 let rivers input =
