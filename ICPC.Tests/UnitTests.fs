@@ -3,50 +3,50 @@ module ICPC.Tests
 open NUnit.Framework
 open FsUnit
 
-// [<Test>]
-//let ``Comma sprinkler, input 1`` () =
-//    commaSprinkler "please sit spot. sit spot, sit. spot here now here."
-//    |> should equal (Some "please, sit spot. sit spot, sit. spot, here now, here.")
+ [<Test>]
+let ``Comma sprinkler, input 1`` () =
+    commaSprinkler "please sit spot. sit spot, sit. spot here now here."
+    |> should equal (Some "please, sit spot. sit spot, sit. spot, here now, here.")
 
-//[<Test>]
-//let ``Comma sprinkler, input 2`` () =
-//    commaSprinkler "one, two. one tree. four tree. four four. five four. six five."
-//    |> should equal (Some "one, two. one, tree. four, tree. four, four. five, four. six five.")
+[<Test>]
+let ``Comma sprinkler, input 2`` () =
+    commaSprinkler "one, two. one tree. four tree. four four. five four. six five."
+    |> should equal (Some "one, two. one, tree. four, tree. four, four. five, four. six five.")
 
-//[<Test>]
-//let ``Comma sprinkler, input 3`` () =
-//    commaSprinkler "test." |> should equal (Some "test.")
+[<Test>]
+let ``Comma sprinkler, input 3`` () =
+    commaSprinkler "test." |> should equal (Some "test.")
 
-//[<Test>]
-//let ``Comma sprinkler, error case 1`` () =
-//    commaSprinkler "" |> should equal None
-//    commaSprinkler "o" |> should equal None
+[<Test>]
+let ``Comma sprinkler, error case 1`` () =
+    commaSprinkler "" |> should equal None
+    commaSprinkler "o" |> should equal None
 
-//[<Test>]
-//let ``Comma sprinkler, error case 2`` () =
-//    commaSprinkler "tesT." |> should equal None
-//    commaSprinkler "test" |> should equal None
-//    commaSprinkler "to be, or not to be? that is the question." |> should equal None
+[<Test>]
+let ``Comma sprinkler, error case 2`` () =
+    commaSprinkler "tesT." |> should equal None
+    commaSprinkler "test" |> should equal None
+    commaSprinkler "to be, or not to be? that is the question." |> should equal None
 
-//[<Test>]
-//let ``Comma sprinkler, error case 3`` () =
-//    commaSprinkler " nope." |> should equal None
-//    commaSprinkler ", as they say." |> should equal None
+[<Test>]
+let ``Comma sprinkler, error case 3`` () =
+    commaSprinkler " nope." |> should equal None
+    commaSprinkler ", as they say." |> should equal None
 
-//[<Test>]
-//let ``Comma sprinkler, error case 4`` () =
-//    commaSprinkler "one, two.  one tree." |> should equal None
-//    commaSprinkler "one,two. one tree." |> should equal None
-//    commaSprinkler "one ,two. one tree." |> should equal None
-//    commaSprinkler "one, two... one tree." |> should equal None
-//    commaSprinkler "one, two. . one tree." |> should equal None
-//    commaSprinkler "one, two. one tree ." |> should equal None
+[<Test>]
+let ``Comma sprinkler, error case 4`` () =
+    commaSprinkler "one, two.  one tree." |> should equal None
+    commaSprinkler "one,two. one tree." |> should equal None
+    commaSprinkler "one ,two. one tree." |> should equal None
+    commaSprinkler "one, two... one tree." |> should equal None
+    commaSprinkler "one, two. . one tree." |> should equal None
+    commaSprinkler "one, two. one tree ." |> should equal None
 
-//[<Test>]
-//let ``Comma sprinkler, error case 5`` () =
-//        commaSprinkler "one, two. one tree. " |> should equal None
-//        commaSprinkler "one, two. one tree, " |> should equal None
-//        commaSprinkler "one, two. one tree " |> should equal None
+[<Test>]
+let ``Comma sprinkler, error case 5`` () =
+        commaSprinkler "one, two. one tree. " |> should equal None
+        commaSprinkler "one, two. one tree, " |> should equal None
+        commaSprinkler "one, two. one tree " |> should equal None
 
 [<Test>]
 let ``Rivers, input 1`` () =
