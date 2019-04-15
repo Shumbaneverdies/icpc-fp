@@ -146,7 +146,7 @@ let commaSprinkler (input:string) : string option =
   |None -> None
   |Some a -> 
   let strL = List.ofSeq a //convert it to a char list
-  let CIDX = match findcomma strL 0 with //converting to an int //index of the first comma
+  let CIDX = match findcomma strL idx with //converting to an int //index of the first comma
              |Some a -> a
              |_ -> -1  
 
@@ -177,35 +177,27 @@ let commaSprinkler (input:string) : string option =
                |_ -> failwith "oops"
  
  let rec sprinkle (str:string option) idx : string option =
+  match str with 
+  |None -> None
+  |Some _ ->
   let out = sprinkleAfter str idx
   let out = sprinkleBefore out idx
   let stri = match out with 
-            |Some a -> a
-            |_ -> failwith "oops"
-  let idx = match findcomma (List.ofSeq stri) (idx) with
+             |Some a -> a
+             |_ -> failwith "oops"
+  let CIDX = match findcomma (List.ofSeq stri) (idx) with
              |Some a -> a
              |None -> -1
 
-  match idx,idx<((List.ofSeq stri)|>List.length) with
-  | -1,_ -> out
-  |_,true -> sprinkle out (idx+2)
+  match idx<((List.ofSeq stri)|>List.length) with
+  |true -> sprinkle out (CIDX+1)
   |_ -> out
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^FUNCTIONS^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
  let output = input|>validation 
-
- let output = sprinkle output 0
- (*let out = match output with 
-           |Some a -> a
-           |_ -> failwith "oops"
-
- let CIDX = match findcomma (List.ofSeq out) 0 with
- |Some a -> a
- |_ -> failwith "oops"
-
- let output = sprinkleAfter output (CIDX+1)
- let output = sprinkleBefore output (CIDX+1)
- *)
+ let output = sprinkleAfter output 0
+ let output = sprinkleBefore output 0
+// let output = sprinkle output 0
  output
 
 let rivers input =
