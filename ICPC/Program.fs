@@ -200,15 +200,26 @@ let commaSprinkler (input:string) : string option =
 // let output = sprinkle output 0
  output
 
-<<<<<<< HEAD
+
  //################################################## Rivers #############################################################
 let splitword = (fun (word : string) -> Seq.toList(word.Split ' '))
-let check a = 
+let check a= 
     match (List.length a) > 2 with
     | false -> None
-    | _ -> Some a
+    | true -> Some a 
 
-let rivers a = check (splitword a)
+let punccheck (input:string) =                                                      
+    match (input:string).EndsWith ' ' || (input:string).StartsWith ' ' || (input:string).Contains "  " with 
+    | true -> None
+    | false -> Some input
+
+
+
+let rivers a = 
+    match check (splitword a),punccheck a with
+    | (Some _, None) -> None
+    | (None , Some a)-> None
+    
 
 [<EntryPoint>]
 let main argv =
